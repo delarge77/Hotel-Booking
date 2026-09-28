@@ -15,7 +15,6 @@ class Hotel:
         book = next((book for book in self.bookings if book.id_booking == id_booking), None)
         if book is not None:
             if book.room.is_available == False:
-                print("PASSOU AQUI 4")
                 book.room.is_available = True
                 self.bookings.remove(book)
     
