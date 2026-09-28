@@ -1,4 +1,5 @@
 class Hotel:
-    def __init__(self, address, number_of_rooms) -> None:
+    def __init__(self, id_hotel, address, rooms) -> None:
+        self.id_hotel = id_hotel
         self.address = address
-        self.number_of_rooms = number_of_rooms
+        self.rooms = rooms
