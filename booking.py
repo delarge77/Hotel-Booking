@@ -9,6 +9,6 @@ class Booking:
         self.price = price
 
     def __str__(self):
-        return f"{self.room}"
+        return f"{self} {self.room}"
 
 
