@@ -23,10 +23,12 @@ booking1 = Booking(room2, customer1, "3764346", "6372462", 320.00)
 hotel.saveBooking(booking1)
 print(*hotel.allBookings())
 print(room2)
+print("FIRST",hotel.findBooking(booking1.id_booking))
 hotel.cancelBooking(booking1.id_booking)
 print(hotel.allBookings())
 print(room2)
 hotel.cancelBooking(booking1.id_booking)
+print(hotel.findBooking(booking1.id_booking))
 
 
 # booking2 = Booking("4342342344", room2, customer2, "3764346", "6372462", 320.00)

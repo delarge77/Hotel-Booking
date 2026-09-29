@@ -13,13 +13,16 @@ class Hotel:
         return availableRooms
 
     def cancelBooking(self, id_booking):
-        book = next((book for book in self.bookings if book.id_booking == id_booking), None)
+        book = self.findBooking(id_booking)
         if book is not None:
             if book.room.is_available == False:
                 book.room.is_available = True
                 self.bookings.remove(book)
         else:
             print("Booking dont exist")
+
+    def findBooking(self, id_booking):
+        return next((book for book in self.bookings if book.id_booking == id_booking), None)
     
     def saveBooking(self, book):
         if book.room.is_available == True:
