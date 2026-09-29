@@ -25,7 +25,7 @@ class Hotel:
         return next((book for book in self.bookings if book.id_booking == id_booking), None)
     
     def saveBooking(self, book):
-        if book.room.is_available == True:
+        if book.room.is_available == True and book.room in self.rooms:
             book.room.is_available = False
             self.bookings.append(book)
         else:
