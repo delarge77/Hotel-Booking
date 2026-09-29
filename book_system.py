@@ -19,14 +19,14 @@ customer2 = Customer("34324235","Maria",21)
 # Try cancelling the same booking a second time.
 
 # Then look at the results and tell me what you think should happen at step 7.
-booking1 = Booking("4342342343", room2, customer1, "3764346", "6372462", 320.00)
+booking1 = Booking(room2, customer1, "3764346", "6372462", 320.00)
 hotel.saveBooking(booking1)
 print(*hotel.allBookings())
 print(room2)
-hotel.cancelBooking("4342342343")
+hotel.cancelBooking(booking1.id_booking)
 print(hotel.allBookings())
 print(room2)
-hotel.cancelBooking("4342342343")
+hotel.cancelBooking(booking1.id_booking)
 
 
 # booking2 = Booking("4342342344", room2, customer2, "3764346", "6372462", 320.00)

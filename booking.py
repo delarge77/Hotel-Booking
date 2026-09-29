@@ -1,7 +1,8 @@
 from room import Room
+import uuid 
 class Booking:
-    def __init__(self, id_booking, room: Room, customer, start_date, end_date, price) -> None:
-        self.id_booking = id_booking # Generate a random number thought function
+    def __init__(self, room: Room, customer, start_date, end_date, price) -> None:
+        self.id_booking = str(uuid.uuid4)
         self.room = room
         self.customer = customer
         self.start_date = start_date
