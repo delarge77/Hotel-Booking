@@ -9,6 +9,6 @@ class Booking:
         self.price = price
 
     def __str__(self):
-        return f"{self} {self.room}"
+        return f"Id booking: {self.id_booking} room:{self.room} customer: {self.customer}, start date:{self.start_date}, end date: {self.end_date}, price: {self.price}"
 
 
