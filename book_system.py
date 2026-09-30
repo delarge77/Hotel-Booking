@@ -65,6 +65,7 @@ hotels_data = [
 
 bookings_data = [
     {
+        "hotel": "3423423",
         "room": "sdadasdsa",
         "customer": "34324234",
         "start_date": "2026-10-01",
@@ -114,7 +115,12 @@ for booking_data in bookings_data:
         if room.id_room == booking_data["room"]
     )
 
+    hotel = next(
+    hotel for hotel in hotels
+    if hotel.id_hotel == booking_data["hotel"]
+)
     booking = Booking(
+        hotel,
         room,
         customer,
         booking_data["start_date"],
@@ -124,8 +130,6 @@ for booking_data in bookings_data:
 
     bookings.append(booking)
 
-for booking in bookings:
-    print(booking)
 
 # room1 = Room("eqwewe","123", False)
 # room2 = Room("sdadasdsa","124")
