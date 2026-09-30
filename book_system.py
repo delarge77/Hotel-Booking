@@ -130,8 +130,24 @@ for booking_data in bookings_data:
     hotel.saveBooking(booking)
     bookings.append(booking)
 
+def show_create_booking(hotels):
+     print("Choose hotel:")
+     for hotel in hotels:
+          print(hotel.id_hotel)
+
+     selected_hotel_id = input("Hotel ID: ")
+     selected_hotel = next(hotel for hotel in hotels if hotel.id_hotel == selected_hotel_id)
+     show_available_rooms_menu(selected_hotel.checkAvailability())
+
+def show_available_rooms_menu(available_rooms):
+     print("Avaibale rooms:")
+     for available_room in available_rooms:
+          print(available_room.number)
+     room = input("Choose room number: ")
+    #  TODO continue from here !!! 
+
 option = 0
-while option != 5:
+while option != 7:
     print("=============================")
     print("   HOTEL BOOKING SYSTEM")
     print("=============================")
@@ -139,7 +155,9 @@ while option != 5:
     print("2. Show available rooms")
     print("3. Show customers")
     print("4. Show bookings")
-    print("5. Exit")
+    print("5. Make a booking")
+    print("6. Cancel a booking")
+    print("7. Exit")
     option = int(input("Choose an option:"))
 
     if option == 1:
@@ -148,13 +166,17 @@ while option != 5:
     elif option == 2:
         for hotel in hotels:
             print("Hotel:", hotel.id_hotel)
-            rooms = [room.number for room in hotel.checkAvailability()]
-            print("Available rooms", *rooms)
+            available_rooms = [room for room in hotel.checkAvailability()]
+            print("Available rooms", *available_rooms)
     elif option == 3:
         print("Customers:", *[customer for customer in customers])
     elif option == 4:
         print("Bookings:", *[book for book in bookings])
     elif option == 5:
+            show_create_booking(hotels)    
+    elif option == 6:
+            print("Cancel a booking")
+    elif option == 7:
         break   
     else:
         print("Please type an valid option")
