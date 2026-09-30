@@ -62,7 +62,6 @@ hotels_data = [
     }
 ]
 
-
 bookings_data = [
     {
         "hotel": "3423423",
@@ -102,7 +101,6 @@ for customer_data in customers_data:
     customers.append(customer)
 
 bookings = []
-
 for booking_data in bookings_data:
 
     customer = next(
@@ -181,15 +179,3 @@ while option != 7:
     else:
         print("Please type an valid option")
         continue
-
-
-
-
-
-
-
-
-
-
-
-
