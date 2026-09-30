@@ -146,11 +146,14 @@ while option != 5:
         for hotel in hotels:
             print(hotel)
     elif option == 2:
-        print("")
+        for hotel in hotels:
+            print("Hotel:", hotel.id_hotel)
+            rooms = [room.number for room in hotel.checkAvailability()]
+            print("Available rooms", *rooms)
     elif option == 3:
-        print("")
+        print("Customers:", *[customer for customer in customers])
     elif option == 4:
-        print("")
+        print("Bookings:", *[book for book in bookings])
     elif option == 5:
         break   
     else:
