@@ -130,6 +130,33 @@ for booking_data in bookings_data:
     hotel.saveBooking(booking)
     bookings.append(booking)
 
+option = 0
+while option != 5:
+    print("=============================")
+    print("   HOTEL BOOKING SYSTEM")
+    print("=============================")
+    print("1. Show hotels")
+    print("2. Show available rooms")
+    print("3. Show customers")
+    print("4. Show bookings")
+    print("5. Exit")
+    option = int(input("Choose an option:"))
+
+    if option == 1:
+        for hotel in hotels:
+            print(hotel)
+    elif option == 2:
+        print("")
+    elif option == 3:
+        print("")
+    elif option == 4:
+        print("")
+    elif option == 5:
+        break   
+    else:
+        print("Please type an valid option")
+        continue
+
 
 
 
