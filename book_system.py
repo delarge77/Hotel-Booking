@@ -3,25 +3,6 @@ from hotel import Hotel
 from booking import Booking
 from customer import Customer
 
-rooms_data = [
-    {
-        "id_room": "eqwewe",
-        "number": "123",
-        "is_available": False
-    },
-    {
-        "id_room": "sdadasdsa",
-        "number": "124",
-        "is_available": True
-    },
-    {
-        "id_room": "room003",
-        "number": "125",
-        "is_available": True
-    }
-]
-
-
 customers_data = [
     {
         "id_customer": "34324234",
@@ -40,6 +21,33 @@ customers_data = [
     }
 ]
 
+rooms_data = [
+    {
+        "id_room": "eqwewe",
+        "number": "123",
+        "is_available": False
+    },
+    {
+        "id_room": "sdadasdsa",
+        "number": "124",
+        "is_available": True
+    },
+    {
+        "id_room": "room003",
+        "number": "125",
+        "is_available": True
+    },
+    {
+        "id_room": "room004",
+        "number": "126",
+        "is_available": True
+    },
+    {
+        "id_room": "room005",
+        "number": "127",
+        "is_available": True
+    }
+]
 
 hotels_data = [
     {
@@ -57,7 +65,6 @@ hotels_data = [
 
 bookings_data = [
     {
-        "id_booking": "booking001",
         "room": "sdadasdsa",
         "customer": "34324234",
         "start_date": "2026-10-01",
@@ -67,7 +74,6 @@ bookings_data = [
 ]
 
 rooms = []
-
 for room_data in rooms_data:
     room = Room(
         room_data["id_room"],
@@ -75,6 +81,15 @@ for room_data in rooms_data:
         room_data["is_available"]
     )
     rooms.append(room)
+
+hotels = []
+for hotel_data in hotels_data:
+    hotel = Hotel(
+        hotel_data["id_hotel"],
+        hotel_data["address"],
+        [room for room in rooms if room.id_room in hotel_data["rooms"]]
+    )
+    hotels.append(hotel)
 
 customers = []
 for customer_data in customers_data:
@@ -85,29 +100,32 @@ for customer_data in customers_data:
     )
     customers.append(customer)
 
-hotels = []
-for hotel_data in hotels_data:
-    hotel = Hotel(
-        hotel_data["id_hotel"],
-        hotel_data["address"],
-        rooms
-    )
-    hotels.append(hotel)
-
 bookings = []
+
 for booking_data in bookings_data:
+
+    customer = next(
+        customer for customer in customers
+        if customer.id_customer == booking_data["customer"]
+    )
+
+    room = next(
+        room for room in rooms
+        if room.id_room == booking_data["room"]
+    )
+
     booking = Booking(
-        booking_data["room"],
-        booking_data["customer"],
+        room,
+        customer,
         booking_data["start_date"],
         booking_data["end_date"],
         booking_data["price"]
     )
+
     bookings.append(booking)
 
-
-
-
+for booking in bookings:
+    print(booking)
 
 # room1 = Room("eqwewe","123", False)
 # room2 = Room("sdadasdsa","124")
