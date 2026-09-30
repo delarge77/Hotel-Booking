@@ -127,9 +127,15 @@ for booking_data in bookings_data:
         booking_data["end_date"],
         booking_data["price"]
     )
-
+    hotel.saveBooking(booking)
     bookings.append(booking)
+    
 
+for hotel in hotels:
+    print("Hotel:", hotel.id_hotel)
+
+    for booking in hotel.allBookings():
+        print(booking)
 
 # room1 = Room("eqwewe","123", False)
 # room2 = Room("sdadasdsa","124")
