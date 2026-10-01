@@ -156,7 +156,12 @@ def register_customer():
    input("Press any key to continue ... ")
 
 def show_all_bookings():
-    print("Bookings:", *[book for book in bookings])
+    all_bookings = [book for book in bookings]
+    if len(all_bookings) > 0:
+        print(*all_bookings)
+    else:
+        print("There are no bookings at the moment")
+
     input("Press any key to continue ... ")
 
 def show_create_booking():
@@ -175,18 +180,20 @@ def show_available_rooms_menu(selected_hotel):
      print("      AVAILABLE ROOMS:       ")
      print("=============================")
      
-     for available_room in selected_hotel.checkAvailability():
-         print(available_room.number)
+     available_rooms = selected_hotel.checkAvailability()
 
-     room_number = input("Choose room number: ")
-     selected_room = None
-     
-     while selected_room == None or room_number == None:
-         room_number = input("Please choose a valid room: ")
-         selected_room = next((room for room in selected_hotel.checkAvailability() if room.number == room_number), None)
-     
-     if selected_room in selected_hotel.checkAvailability():
-         show_customers(selected_hotel, selected_room) 
+     for room in available_rooms:
+        print(room.number)
+
+     while True:
+        room_number = input("Choose room number: ")
+
+        selected_room = next((room for room in available_rooms if room.number == room_number), None)
+        if selected_room is not None:
+            show_customers(selected_hotel, selected_room)
+            break
+
+        print("Please choose a valid room.")
 
      
 
@@ -217,6 +224,7 @@ def selected_dates(selected_hotel, selected_room, selected_customer):
 
      new_booking = Booking(selected_hotel, selected_room, selected_customer, start_date, end_date)
      confirm_new_booking(new_booking)
+     bookings.append(new_booking)
      
 
 def confirm_new_booking(new_booking):
@@ -224,7 +232,7 @@ def confirm_new_booking(new_booking):
     print("      CONFIRM BOOKING:       ")
     print("=============================")
     confirm = input("Confirm booking ? Y / N: ")
-    if confirm == "Y" or confirm =="y":
+    if confirm.lower() == "y":
         bookings.append(new_booking)
         print("=============================")
         print("     BOOKING CONFIRMED       ")
@@ -234,24 +242,36 @@ def confirm_new_booking(new_booking):
     input("Press any key to continue ... ")
 
 def cancel_booking():
-     print("=============================")
-     print("       CANCEL BOOKING        ")
-     print("=============================")
+    print("=============================")
+    print("       CANCEL BOOKING        ")
+    print("=============================")
 
-     for book in bookings:
-         print(book.id_booking)
+    for book in bookings:
+        print(book.id_booking)
 
-     id_booking = input("Type booking ID: ")
-     selected_booking = next((book for book in bookings if book.id_booking == id_booking), None)
-     confirm = input("Confirm cancelling booking ? Y / N: ")
-     if confirm == "Y" or confirm =="y":
-        bookings.remove(selected_booking)
+    id_booking = input("Type booking ID: ")
+
+    selected_booking = next((book for book in bookings if book.id_booking == id_booking), None)
+
+    if selected_booking is None:
+        print("Booking does not exist.")
+        input("Press any key to continue ... ")
+        return
+
+    confirm = input("Confirm cancelling booking? Y / N: ")
+
+    if confirm.lower() == "y":
+        selected_booking.hotel.cancelBooking(selected_booking.id_booking)
+
+        if selected_booking in bookings:
+            bookings.remove(selected_booking)
+
         print("=============================")
         print("     BOOKING CANCELLED       ")
         print("=============================")
         print("Booking cancelled")
-        
-     input("Press any key to continue ... ")
+
+    input("Press any key to continue ... ")
      
 
 
@@ -283,7 +303,11 @@ while option != 8:
     elif option == 6:
         show_create_booking()    
     elif option == 7:
-        cancel_booking()
+        if len(bookings) > 0:
+            cancel_booking()
+        else:
+            print("There are no bookings at the moment")
+            input("Press any key to continue ... ")
     elif option == 8:
         break   
     else:
