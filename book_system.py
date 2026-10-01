@@ -54,12 +54,12 @@ hotels_data = [
     {
         "id_hotel": "3423423",
         "address": "körsbärsgatan 5A",
-        "rooms": ["idroom001", "idroom002", "room003"]
+        "rooms": ["idroom001", "idroom002", "idroom003"]
     },
     {
         "id_hotel": "hotel002",
         "address": "Avenyn 10, Göteborg",
-        "rooms": ["room004", "room005"]
+        "rooms": ["idroom004", "idroom005"]
     }
 ]
 
@@ -159,7 +159,7 @@ def show_all_bookings():
     print("Bookings:", *[book for book in bookings])
     input("Press any key to continue ... ")
 
-def show_create_booking(hotels):
+def show_create_booking():
      print("=============================")
      print("       CHOOSE A HOTEL:        ")
      print("=============================")
@@ -274,7 +274,7 @@ while option != 8:
     elif option == 5:
         show_all_bookings()
     elif option == 6:
-        show_create_booking(hotels)    
+        show_create_booking()    
     elif option == 7:
         cancel_booking()
     elif option == 8:
