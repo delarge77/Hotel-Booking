@@ -2,6 +2,7 @@ from room import Room
 from hotel import Hotel
 from booking import Booking
 from customer import Customer
+import uuid
 
 customers_data = [
     {
@@ -128,8 +129,19 @@ for booking_data in bookings_data:
     hotel.saveBooking(booking)
     bookings.append(booking)
 
+
+def register_customer():
+   id_customer = str(uuid.uuid4())
+   name = input("Type customer name: ")
+   age = input("Type customer age: ")
+   new_customer = Customer(id_customer, name, age)
+   customers.append(new_customer)
+
+
 def show_create_booking(hotels):
-     print("Choose hotel:")
+     print("=============================")
+     print("       CHOOSE A HOTEL:        ")
+     print("=============================")
      for hotel in hotels:
           print(hotel.id_hotel)
 
@@ -138,11 +150,21 @@ def show_create_booking(hotels):
      show_available_rooms_menu(selected_hotel.checkAvailability())
 
 def show_available_rooms_menu(available_rooms):
-     print("Avaibale rooms:")
+     print("=============================")
+     print("      AVAILABLE ROOMS:       ")
+     print("=============================")
+     
      for available_room in available_rooms:
           print(available_room.number)
      room = input("Choose room number: ")
     #  TODO continue from here !!! 
+
+
+
+
+
+
+
 
 option = 0
 while option != 7:
@@ -152,11 +174,12 @@ while option != 7:
     print("1. Show hotels")
     print("2. Show available rooms")
     print("3. Show customers")
-    print("4. Show bookings")
-    print("5. Make a booking")
-    print("6. Cancel a booking")
-    print("7. Exit")
-    option = int(input("Choose an option:"))
+    print("4. Add new customer")
+    print("5. Show bookings")
+    print("6. Make a booking")
+    print("7. Cancel a booking")
+    print("8. Exit")
+    option = int(input("Choose an option: "))
 
     if option == 1:
         for hotel in hotels:
@@ -169,12 +192,14 @@ while option != 7:
     elif option == 3:
         print("Customers:", *[customer for customer in customers])
     elif option == 4:
-        print("Bookings:", *[book for book in bookings])
+        register_customer()
     elif option == 5:
-            show_create_booking(hotels)    
+        print("Bookings:", *[book for book in bookings])
     elif option == 6:
-            print("Cancel a booking")
+            show_create_booking(hotels)    
     elif option == 7:
+            print("Cancel a booking")
+    elif option == 8:
         break   
     else:
         print("Please type an valid option")
