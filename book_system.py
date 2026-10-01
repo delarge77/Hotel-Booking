@@ -172,7 +172,12 @@ def show_create_booking():
           print(hotel.id_hotel)
 
      selected_hotel_id = input("Hotel ID: ")
-     selected_hotel = next(hotel for hotel in hotels if hotel.id_hotel == selected_hotel_id)
+
+     selected_hotel = next((hotel for hotel in hotels if hotel.id_hotel == selected_hotel_id), None)
+     if selected_hotel is None:
+        print("Hotel not found.")
+        return
+
      show_available_rooms_menu(selected_hotel)
 
 def show_available_rooms_menu(selected_hotel):
@@ -194,8 +199,6 @@ def show_available_rooms_menu(selected_hotel):
             break
 
         print("Please choose a valid room.")
-
-     
 
 def show_customers(selected_hotel, selected_room):
     print("=============================")
@@ -226,7 +229,6 @@ def selected_dates(selected_hotel, selected_room, selected_customer):
      confirm_new_booking(new_booking)
      bookings.append(new_booking)
      
-
 def confirm_new_booking(new_booking):
     print("=============================")
     print("      CONFIRM BOOKING:       ")
