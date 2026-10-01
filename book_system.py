@@ -24,27 +24,27 @@ customers_data = [
 
 rooms_data = [
     {
-        "id_room": "eqwewe",
+        "id_room": "idroom001",
         "number": "123",
         "is_available": False
     },
     {
-        "id_room": "sdadasdsa",
+        "id_room": "idroom002",
         "number": "124",
         "is_available": True
     },
     {
-        "id_room": "room003",
+        "id_room": "idroom003",
         "number": "125",
         "is_available": True
     },
     {
-        "id_room": "room004",
+        "id_room": "idroom004",
         "number": "126",
         "is_available": True
     },
     {
-        "id_room": "room005",
+        "id_room": "idroom005",
         "number": "127",
         "is_available": True
     }
@@ -54,7 +54,7 @@ hotels_data = [
     {
         "id_hotel": "3423423",
         "address": "körsbärsgatan 5A",
-        "rooms": ["eqwewe", "sdadasdsa", "room003"]
+        "rooms": ["idroom001", "idroom002", "room003"]
     },
     {
         "id_hotel": "hotel002",
@@ -66,7 +66,7 @@ hotels_data = [
 bookings_data = [
     {
         "hotel": "3423423",
-        "room": "sdadasdsa",
+        "room": "idroom001",
         "customer": "34324234",
         "start_date": "2026-10-01",
         "end_date": "2026-10-05",
@@ -132,15 +132,18 @@ for booking_data in bookings_data:
 def show_hotels():
     for hotel in hotels:
         print(hotel)
+    input("Press any key to continue ... ")
 
 def show_available_rooms():
     for hotel in hotels:
         print("Hotel:", hotel.id_hotel)
         available_rooms = [room for room in hotel.checkAvailability()]
         print("Available rooms", *available_rooms)
+    input("Press any key to continue ... ")
 
 def show_all_customers():
     print("Customers:", *[customer for customer in customers])
+    input("Press any key to continue ... ")
 
 def register_customer():
    id_customer = str(uuid.uuid4())
@@ -148,9 +151,13 @@ def register_customer():
    age = input("Type customer age: ")
    new_customer = Customer(id_customer, name, age)
    customers.append(new_customer)
+   print(f"Customer: {new_customer.name} added in the system")
+
+   input("Press any key to continue ... ")
 
 def show_all_bookings():
     print("Bookings:", *[book for book in bookings])
+    input("Press any key to continue ... ")
 
 def show_create_booking(hotels):
      print("=============================")
@@ -202,8 +209,22 @@ def selected_dates(selected_hotel, selected_room, selected_customer):
      end_date = input("Type end date: ")
 
      new_booking = Booking(selected_hotel, selected_room, selected_customer, start_date, end_date)
-     # DO CONFIRM BOOKING SCREEN
-     bookings.append(new_booking)
+     confirm_new_booking(new_booking)
+     
+
+def confirm_new_booking(new_booking):
+    print("=============================")
+    print("      CONFIRM BOOKING:       ")
+    print("=============================")
+    confirm = input("Confirm booking ? Y / N: ")
+    if confirm == "Y" or confirm =="y":
+        bookings.append(new_booking)
+        print("=============================")
+        print("     BOOKING CONFIRMED       ")
+        print("=============================")
+        print("Booking confirmed with ID:", new_booking.id_booking)
+
+    input("Press any key to continue ... ")
 
 def cancel_booking():
      print("=============================")
@@ -215,8 +236,16 @@ def cancel_booking():
 
      id_booking = input("Type booking ID: ")
      selected_booking = next((book for book in bookings if book.id_booking == id_booking), None)
-     print(bookings)
-     bookings.remove(selected_booking)
+     confirm = input("Confirm cancelling booking ? Y / N: ")
+     if confirm == "Y" or confirm =="y":
+        bookings.remove(selected_booking)
+        print("=============================")
+        print("     BOOKING CANCELLED       ")
+        print("=============================")
+        print("Booking cancelled")
+        
+     input("Press any key to continue ... ")
+     
 
 
 option = 0
