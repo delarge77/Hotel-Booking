@@ -179,8 +179,15 @@ def show_available_rooms_menu(selected_hotel):
          print(available_room.number)
 
      room_number = input("Choose room number: ")
-     selected_room = next((room for room in selected_hotel.checkAvailability() if room.number == room_number), None)
-     show_customers(selected_hotel, selected_room) 
+     selected_room = None
+     
+     while selected_room == None or room_number == None:
+         room_number = input("Please choose a valid room: ")
+         selected_room = next((room for room in selected_hotel.checkAvailability() if room.number == room_number), None)
+     
+     if selected_room in selected_hotel.checkAvailability():
+         show_customers(selected_hotel, selected_room) 
+
      
 
 def show_customers(selected_hotel, selected_room):
