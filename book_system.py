@@ -147,29 +147,55 @@ def show_create_booking(hotels):
 
      selected_hotel_id = input("Hotel ID: ")
      selected_hotel = next(hotel for hotel in hotels if hotel.id_hotel == selected_hotel_id)
-     show_available_rooms_menu(selected_hotel.checkAvailability())
+     show_available_rooms_menu(selected_hotel)
 
-def show_available_rooms_menu(available_rooms):
+def show_available_rooms_menu(selected_hotel):
      print("=============================")
      print("      AVAILABLE ROOMS:       ")
      print("=============================")
      
-     for available_room in available_rooms:
-          print(available_room.number)
-     room = input("Choose room number: ")
-    #  TODO continue from here !!! 
+     for available_room in selected_hotel.checkAvailability():
+         print(available_room.number)
 
+     room_number = input("Choose room number: ")
+     selected_room = next((room for room in selected_hotel.checkAvailability() if room.number == room_number), None)
+     show_customers(selected_hotel, selected_room) 
+     
 
+def show_customers(selected_hotel, selected_room):
+    print("=============================")
+    print("     CHOOSE CUSTOMER    ")
+    print("=============================")
 
+    for customer in customers:
+        print(customer.name) # IN REAL WORLD CAN NOT BE NAME. IF HAVE TIME CHANGE IT.
 
+    customer_name = input("Select a customer: ")
+    selected_customer = next((customer for customer in customers if customer.name == customer_name), None)
+    selected_dates(selected_hotel, selected_room, selected_customer)
+    
+def selected_dates(selected_hotel, selected_room, selected_customer):
+     print("=============================")
+     print("     SELECT START DATE:      ")
+     print("=============================")
 
+     start_date = input("Type start date: ")
 
+     print("=============================")
+     print("     SELECT END DATE:      ")
+     print("=============================")
+
+     end_date = input("Type end date: ")
+
+     new_booking = Booking(selected_hotel, selected_room, selected_customer, start_date, end_date)
+     # DO CONFIRM BOOKING SCREEN
+     bookings.append(new_booking)
 
 
 option = 0
 while option != 7:
     print("=============================")
-    print("   HOTEL BOOKING SYSTEM")
+    print("     HOTEL BOOKING SYSTEM    ")
     print("=============================")
     print("1. Show hotels")
     print("2. Show available rooms")

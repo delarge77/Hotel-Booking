@@ -2,7 +2,7 @@ from room import Room
 from hotel import Hotel
 import uuid 
 class Booking:
-    def __init__(self, hotel: Hotel, room: Room, customer, start_date, end_date, price) -> None:
+    def __init__(self, hotel: Hotel, room: Room, customer, start_date, end_date, price = "") -> None:
         self.id_booking = str(uuid.uuid4())
         self.hotel = hotel
         self.room = room
