@@ -35,4 +35,4 @@ class Hotel:
         return self.bookings
 
     def __str__(self) -> str:
-        return f"Hotel id: {self.id_hotel}, address: {self.address}, Rooms:{len(self.rooms)}, Bookings: {len(self.bookings)}"
+        return f"Hotel id: {self.id_hotel}, address: {self.address}, Rooms: {len(self.rooms)}, Bookings: {len(self.bookings)}"

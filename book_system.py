@@ -3,6 +3,12 @@ from hotel import Hotel
 from booking import Booking
 from customer import Customer
 import uuid
+from datetime import datetime
+
+
+# ============================================================
+# INITIAL DATA
+# ============================================================
 
 customers_data = [
     {
@@ -74,6 +80,10 @@ bookings_data = [
     }
 ]
 
+# ============================================================
+# CREATE ROOMS
+# ============================================================
+
 rooms = []
 for room_data in rooms_data:
     room = Room(
@@ -83,14 +93,23 @@ for room_data in rooms_data:
     )
     rooms.append(room)
 
+# ============================================================
+# CREATE HOTELS
+# ============================================================
+
 hotels = []
 for hotel_data in hotels_data:
+    hotel_rooms = [room for room in rooms if room.id_room in hotel_data["rooms"]]
     hotel = Hotel(
         hotel_data["id_hotel"],
         hotel_data["address"],
-        [room for room in rooms if room.id_room in hotel_data["rooms"]]
+        hotel_rooms
     )
     hotels.append(hotel)
+
+# ============================================================
+# CREATE CUSTOMERS
+# ============================================================
 
 customers = []
 for customer_data in customers_data:
@@ -101,98 +120,232 @@ for customer_data in customers_data:
     )
     customers.append(customer)
 
+# ============================================================
+# CREATE INITIAL BOOKINGS
+# ============================================================
+
 bookings = []
 for booking_data in bookings_data:
+    customer = next((customer for customer in customers if customer.id_customer == booking_data["customer"]), None)
+    room = next((room for room in rooms if room.id_room == booking_data["room"]), None)
+    hotel = next((hotel for hotel in hotels if hotel.id_hotel == booking_data["hotel"]), None)
 
-    customer = next(
-        customer for customer in customers
-        if customer.id_customer == booking_data["customer"]
-    )
+    if customer is not None and room is not None and hotel is not None:
+        booking = Booking(
+            hotel,
+            room,
+            customer,
+            booking_data["start_date"],
+            booking_data["end_date"],
+            booking_data["price"]
+        )
 
-    room = next(
-        room for room in rooms
-        if room.id_room == booking_data["room"]
-    )
+        # The room is already marked as unavailable
+        # because this booking already exists.
+        room.is_available = False
 
-    hotel = next(
-    hotel for hotel in hotels
-    if hotel.id_hotel == booking_data["hotel"]
-)
-    booking = Booking(
-        hotel,
-        room,
-        customer,
-        booking_data["start_date"],
-        booking_data["end_date"],
-        booking_data["price"]
-    )
-    hotel.saveBooking(booking)
-    bookings.append(booking)
+        # Add the booking to the hotel and global list.
+        hotel.bookings.append(booking)
+        bookings.append(booking)
+
+# ============================================================
+# HELPER FUNCTIONS
+# ============================================================
+
+def get_age():
+    while True:
+        try:
+            age = int(input("Type customer age: "))
+
+            if age <= 0:
+                print("Age must be greater than 0.")
+                continue
+
+            return age
+
+        except ValueError:
+            print("Please enter a valid age.")
+
+
+def get_date(message):
+    while True:
+        date_input = input(message)
+        try:
+            datetime.strptime(date_input, "%Y-%m-%d")
+            return date_input
+        except ValueError:
+            print("Invalid date. Please use YYYY-MM-DD.")
+
+
+# ============================================================
+# SHOW HOTELS
+# ============================================================
 
 def show_hotels():
+
+    print("=============================")
+    print("           HOTELS             ")
+    print("=============================")
+
     for hotel in hotels:
         print(hotel)
+
     input("Press any key to continue ... ")
+
+
+# ============================================================
+# SHOW AVAILABLE ROOMS
+# ============================================================
 
 def show_available_rooms():
+
+    print("=============================")
+    print("      AVAILABLE ROOMS        ")
+    print("=============================")
+
     for hotel in hotels:
-        print("Hotel:", hotel.id_hotel)
-        available_rooms = [room for room in hotel.checkAvailability()]
-        print("Available rooms", *available_rooms)
-    input("Press any key to continue ... ")
+
+        print(f"\nHotel: {hotel.id_hotel}")
+
+        available_rooms = hotel.checkAvailability()
+
+        if len(available_rooms) == 0:
+            print("No rooms available.")
+        else:
+            for room in available_rooms:
+                print(f"Room: {room.number}")
+
+    input("\nPress any key to continue ... ")
+
+
+# ============================================================
+# SHOW CUSTOMERS
+# ============================================================
 
 def show_all_customers():
-    print("Customers:", *[customer for customer in customers])
-    input("Press any key to continue ... ")
+
+    print("=============================")
+    print("          CUSTOMERS           ")
+    print("=============================")
+
+    if len(customers) == 0:
+        print("There are no customers.")
+
+    else:
+        for customer in customers:
+            print(customer)
+
+    input("\nPress any key to continue ... ")
+
+
+# ============================================================
+# REGISTER CUSTOMER
+# ============================================================
 
 def register_customer():
-   id_customer = str(uuid.uuid4())
-   name = input("Type customer name: ")
-   age = input("Type customer age: ")
-   new_customer = Customer(id_customer, name, age)
-   customers.append(new_customer)
-   print(f"Customer: {new_customer.name} added in the system")
 
-   input("Press any key to continue ... ")
+    print("=============================")
+    print("       ADD CUSTOMER           ")
+    print("=============================")
+
+    id_customer = str(uuid.uuid4())
+
+    name = input("Type customer name: ")
+
+    while name.strip() == "":
+        print("Name cannot be empty.")
+        name = input("Type customer name: ")
+
+    age = get_age()
+
+    new_customer = Customer(
+        id_customer,
+        name,
+        age
+    )
+
+    customers.append(new_customer)
+
+    print("\nCustomer added successfully!")
+    print(new_customer)
+
+    input("\nPress any key to continue ... ")
+
+
+# ============================================================
+# SHOW BOOKINGS
+# ============================================================
 
 def show_all_bookings():
-    all_bookings = [book for book in bookings]
-    if len(all_bookings) > 0:
-        print(*all_bookings)
-    else:
-        print("There are no bookings at the moment")
 
-    input("Press any key to continue ... ")
+    print("=============================")
+    print("          BOOKINGS             ")
+    print("=============================")
+
+    if len(bookings) == 0:
+        print("There are no bookings at the moment.")
+
+    else:
+        for booking in bookings:
+            print(
+            f"Hotel: {booking.hotel} | "f"Room number: {booking.room.number} "
+            f"Customer name: {booking.customer.name} | "f"Start date: {booking.start_date} "
+            f"End date: {booking.end_date}"
+            )
+
+    input("\nPress any key to continue ... ")
+
+
+# ============================================================
+# CREATE BOOKING - CHOOSE HOTEL
+# ============================================================
 
 def show_create_booking():
-     print("=============================")
-     print("       CHOOSE A HOTEL:        ")
-     print("=============================")
-     for hotel in hotels:
-          print(hotel.id_hotel)
 
-     selected_hotel_id = input("Hotel ID: ")
+    print("=============================")
+    print("       CHOOSE A HOTEL         ")
+    print("=============================")
 
-     selected_hotel = next((hotel for hotel in hotels if hotel.id_hotel == selected_hotel_id), None)
-     if selected_hotel is None:
+    for hotel in hotels:
+        print(
+            f"ID: {hotel.id_hotel} | "
+            f"Address: {hotel.address}"
+        )
+
+    selected_hotel_id = input("\nHotel ID: ")
+
+    selected_hotel = next((hotel for hotel in hotels if hotel.id_hotel == selected_hotel_id), None )
+
+    if selected_hotel is None:
         print("Hotel not found.")
+        input("Press any key to continue ... ")
         return
 
-     show_available_rooms_menu(selected_hotel)
+    show_available_rooms_menu(selected_hotel)
+
+
+# ============================================================
+# CREATE BOOKING - CHOOSE ROOM
+# ============================================================
 
 def show_available_rooms_menu(selected_hotel):
-     print("=============================")
-     print("      AVAILABLE ROOMS:       ")
-     print("=============================")
-     
-     available_rooms = selected_hotel.checkAvailability()
 
-     for room in available_rooms:
-        print(room.number)
+    print("=============================")
+    print("      AVAILABLE ROOMS        ")
+    print("=============================")
 
-     while True:
-        room_number = input("Choose room number: ")
+    available_rooms = selected_hotel.checkAvailability()
 
+    if len(available_rooms) == 0:
+        print("There are no available rooms in this hotel.")
+        input("Press any key to continue ... ")
+        return
+
+    for room in available_rooms:
+        print(f"Room: {room.number}")
+
+    while True:
+        room_number = input("\nChoose room number: ")
         selected_room = next((room for room in available_rooms if room.number == room_number), None)
         if selected_room is not None:
             show_customers(selected_hotel, selected_room)
@@ -200,58 +353,113 @@ def show_available_rooms_menu(selected_hotel):
 
         print("Please choose a valid room.")
 
+
+# ============================================================
+# CREATE BOOKING - CHOOSE CUSTOMER
+# ============================================================
+
 def show_customers(selected_hotel, selected_room):
+
     print("=============================")
-    print("     CHOOSE CUSTOMER    ")
+    print("       CHOOSE CUSTOMER        ")
     print("=============================")
 
     for customer in customers:
-        print(customer.name) # IN REAL WORLD CAN NOT BE NAME. IF HAVE TIME CHANGE IT.
+        print(
+            f"ID: {customer.id_customer} | "
+            f"Name: {customer.name}"
+        )
 
-    customer_name = input("Select a customer: ")
-    selected_customer = next((customer for customer in customers if customer.name == customer_name), None)
-    selected_dates(selected_hotel, selected_room, selected_customer)
-    
+    while True:
+        customer_id = input("\nSelect customer ID: ")
+        selected_customer = next((customer for customer in customers if customer.id_customer == customer_id), None)
+        if selected_customer is not None:
+            selected_dates(selected_hotel, selected_room, selected_customer)
+            break
+        print("Customer not found. Please try again.")
+
+# ============================================================
+# CREATE BOOKING - SELECT DATES
+# ============================================================
+
 def selected_dates(selected_hotel, selected_room, selected_customer):
-     print("=============================")
-     print("     SELECT START DATE:      ")
-     print("=============================")
+    print("=============================")
+    print("       SELECT START DATE      ")
+    print("=============================")
 
-     start_date = input("Type start date: ")
+    start_date = get_date("Start date (YYYY-MM-DD): ")
 
-     print("=============================")
-     print("     SELECT END DATE:      ")
-     print("=============================")
+    print("=============================")
+    print("        SELECT END DATE       ")
+    print("=============================")
 
-     end_date = input("Type end date: ")
+    end_date = get_date("End date (YYYY-MM-DD): ")
 
-     new_booking = Booking(selected_hotel, selected_room, selected_customer, start_date, end_date)
-     confirm_new_booking(new_booking)
-     bookings.append(new_booking)
-     
+    # Make sure the end date is after the start date.
+    start = datetime.strptime(start_date, "%Y-%m-%d")
+    end = datetime.strptime(end_date, "%Y-%m-%d")
+
+    if end <= start:
+        print("\nEnd date must be after start date.")
+        input("Press any key to continue ... ")
+        return
+
+    new_booking = Booking(selected_hotel, selected_room, selected_customer, start_date, end_date)
+    confirm_new_booking(new_booking)
+
+# ============================================================
+# CONFIRM BOOKING
+# ============================================================
+
 def confirm_new_booking(new_booking):
-    print("=============================")
-    print("      CONFIRM BOOKING:       ")
-    print("=============================")
-    confirm = input("Confirm booking ? Y / N: ")
-    if confirm.lower() == "y":
-        bookings.append(new_booking)
-        print("=============================")
-        print("     BOOKING CONFIRMED       ")
-        print("=============================")
-        print("Booking confirmed with ID:", new_booking.id_booking)
 
-    input("Press any key to continue ... ")
+    print("=============================")
+    print("       CONFIRM BOOKING        ")
+    print("=============================")
+
+    print(f"Hotel: {new_booking.hotel.id_hotel}")
+    print(f"Room: {new_booking.room.number}")
+    print(f"Customer: {new_booking.customer.name}")
+    print(f"Start date: {new_booking.start_date}")
+    print(f"End date: {new_booking.end_date}")
+
+    confirm = input("\nConfirm booking? Y / N: ")
+
+    if confirm.lower() == "y":
+        # Save booking in the hotel.
+        new_booking.hotel.saveBooking(new_booking)
+
+        # Add the same booking to the global booking list.
+        bookings.append(new_booking)
+
+        print("=============================")
+        print("       BOOKING CONFIRMED      ")
+        print("=============================")
+
+        print("Booking confirmed with ID:", new_booking.id_booking)
+    else:
+        print("\nBooking cancelled.")
+
+    input("\nPress any key to continue ... ")
+
+
+# ============================================================
+# CANCEL BOOKING
+# ============================================================
 
 def cancel_booking():
     print("=============================")
-    print("       CANCEL BOOKING        ")
+    print("       CANCEL BOOKING         ")
     print("=============================")
 
     for book in bookings:
-        print(book.id_booking)
+        print(
+            f"ID: {book.id_booking} | "
+            f"Customer: {book.customer.name} | "
+            f"Room: {book.room.number}"
+        )
 
-    id_booking = input("Type booking ID: ")
+    id_booking = input("\nType booking ID: ")
 
     selected_booking = next((book for book in bookings if book.id_booking == id_booking), None)
 
@@ -260,22 +468,33 @@ def cancel_booking():
         input("Press any key to continue ... ")
         return
 
-    confirm = input("Confirm cancelling booking? Y / N: ")
+    print("\nBooking found:")
+    print(selected_booking)
+
+    confirm = input("\nConfirm cancelling booking? Y / N: ")
 
     if confirm.lower() == "y":
+        # Cancel booking inside the hotel.
         selected_booking.hotel.cancelBooking(selected_booking.id_booking)
 
+        # Remove the booking from the global list.
         if selected_booking in bookings:
             bookings.remove(selected_booking)
 
         print("=============================")
-        print("     BOOKING CANCELLED       ")
+        print("       BOOKING CANCELLED     ")
         print("=============================")
-        print("Booking cancelled")
 
-    input("Press any key to continue ... ")
-     
+        print("Booking cancelled successfully.")
+    else:
+        print("Cancellation aborted.")
 
+    input("\nPress any key to continue ... ")
+
+
+# ============================================================
+# MAIN MENU
+# ============================================================
 
 option = 0
 while option != 8:
@@ -290,7 +509,12 @@ while option != 8:
     print("6. Make a booking")
     print("7. Cancel a booking")
     print("8. Exit")
-    option = int(input("Choose an option: "))
+
+    try:
+        option = int(input("\nChoose an option: "))
+    except ValueError:
+        print("\nPlease type a number from 1 to 8.")
+        continue
 
     if option == 1:
         show_hotels()
@@ -303,15 +527,14 @@ while option != 8:
     elif option == 5:
         show_all_bookings()
     elif option == 6:
-        show_create_booking()    
+        show_create_booking()
     elif option == 7:
         if len(bookings) > 0:
             cancel_booking()
         else:
-            print("There are no bookings at the moment")
+            print("\nThere are no bookings at the moment.")
             input("Press any key to continue ... ")
     elif option == 8:
-        break   
+        print("\nThank you for using the Hotel Booking System!")
     else:
-        print("Please type an valid option")
-        continue
+        print("\nPlease type a valid option.")
